@@ -46,12 +46,4 @@ Grad-CAM overlays are available both in-batch (`notebooks/2_gradcam_analysis.ipy
 
 ---
 
-## 🧪 Setup & Local Run
-
-### 📦 Step 1: Clone and install dependencies
-
-```bash
-git clone https://github.com/JahnaviPatel84/Traffic-Sign-Recognition-App.git
-cd Traffic-Sign-Recognition-App
-pip install -r requirements.txt
-streamlit run app.py
+**🔗 Try the live app here:** [Streamlit App](https://traffic-sign-recognition-27kcgm5fysldhkfbnq4g6x.streamlit.app/)
