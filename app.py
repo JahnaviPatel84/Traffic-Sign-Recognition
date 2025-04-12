@@ -15,7 +15,7 @@ import cv2
 from PIL import Image
 from torchvision import transforms
 
-# ==== Define Model ====
+# ==== Model ====
 class TrafficSignCNN(torch.nn.Module):
     def __init__(self, num_classes=43):
         super().__init__()
@@ -36,7 +36,7 @@ class TrafficSignCNN(torch.nn.Module):
         x = self.fc2(x)
         return x
 
-# ==== Grad-CAM Utility ====
+# ==== Grad-CAM ====
 def generate_gradcam(model, image_tensor, class_idx, target_layer='conv3'):
     activations, gradients = [], []
 
@@ -76,25 +76,26 @@ CLASS_ID_TO_NAME = {
     0: 'Speed limit (20km/h)', 1: 'Speed limit (30km/h)', 2: 'Speed limit (50km/h)',
     3: 'Speed limit (60km/h)', 4: 'Speed limit (70km/h)', 5: 'Speed limit (80km/h)',
     6: 'End of speed limit (80km/h)', 7: 'Speed limit (100km/h)', 8: 'Speed limit (120km/h)',
-    9: 'No passing', 10: 'No passing > 3.5 tons', 11: 'Right-of-way at next intersection',
-    12: 'Priority road', 13: 'Yield', 14: 'Stop', 15: 'No vehicles',
-    16: 'No vehicles > 3.5 tons', 17: 'No entry', 18: 'General caution',
-    19: 'Left curve', 20: 'Right curve', 21: 'Double curve', 22: 'Bumpy road',
-    23: 'Slippery road', 24: 'Road narrows right', 25: 'Road work',
-    26: 'Traffic signals', 27: 'Pedestrians', 28: 'Children crossing',
-    29: 'Bicycles crossing', 30: 'Ice/snow', 31: 'Wild animals',
+    9: 'No passing', 10: 'No passing for vehicles > 3.5 tons',
+    11: 'Right-of-way at next intersection', 12: 'Priority road', 13: 'Yield', 14: 'Stop',
+    15: 'No vehicles', 16: 'Vehicles > 3.5 tons prohibited', 17: 'No entry',
+    18: 'General caution', 19: 'Dangerous curve left', 20: 'Dangerous curve right',
+    21: 'Double curve', 22: 'Bumpy road', 23: 'Slippery road', 24: 'Road narrows',
+    25: 'Road work', 26: 'Traffic signals', 27: 'Pedestrians', 28: 'Children crossing',
+    29: 'Bicycles crossing', 30: 'Beware of ice/snow', 31: 'Wild animals crossing',
     32: 'End of all restrictions', 33: 'Turn right ahead', 34: 'Turn left ahead',
-    35: 'Ahead only', 36: 'Straight or right', 37: 'Straight or left',
-    38: 'Keep right', 39: 'Keep left', 40: 'Roundabout', 41: 'End of no passing',
-    42: 'End of no passing > 3.5 tons'
+    35: 'Ahead only', 36: 'Go straight or right', 37: 'Go straight or left',
+    38: 'Keep right', 39: 'Keep left', 40: 'Roundabout mandatory',
+    41: 'End of no passing', 42: 'End of no passing for vehicles > 3.5 tons'
 }
 
-# ==== Load Model ====
+# ==== Load model ====
 model = TrafficSignCNN()
-model.load_state_dict(torch.load("models/traffic_sign_cnn.pth", map_location="cpu"))
+model.load_state_dict(torch.load("outputs/traffic_sign_cnn.pth", map_location="cpu"))
 model.eval()
 
 # ==== Streamlit UI ====
+st.set_page_config(page_title="Traffic Sign Recognition", layout="wide")
 st.title("🚦 Traffic Sign Recognition")
 st.markdown("Upload an image of a traffic sign to see the prediction and heatmap.")
 
@@ -102,7 +103,7 @@ uploaded_file = st.file_uploader("Upload Image", type=["jpg", "png", "jpeg"])
 
 if uploaded_file:
     image = Image.open(uploaded_file).convert("RGB")
-    st.image(image, caption="Uploaded Image", use_column_width=True)
+    st.markdown("#### Uploaded Image")
 
     # Transform image
     transform = transforms.Compose([
@@ -118,7 +119,7 @@ if uploaded_file:
         pred_class = output.argmax(dim=1).item()
         pred_name = CLASS_ID_TO_NAME[pred_class]
 
-    st.success(f"**Prediction:** {pred_name}")
+    st.success(f"**Prediction: {pred_name}**")
 
     # Grad-CAM
     cam = generate_gradcam(model, input_tensor, pred_class)
@@ -128,4 +129,9 @@ if uploaded_file:
     heatmap = cv2.applyColorMap(np.uint8(255 * cam), cv2.COLORMAP_JET)
     overlay = cv2.addWeighted(np.uint8(image_np * 255), 0.6, heatmap, 0.4, 0)
 
-    st.image(overlay, caption="Grad-CAM Explanation", channels="BGR")
+    # ==== Display both side by side ====
+    col1, col2 = st.columns(2)
+    with col1:
+        st.image(image_np, caption="Uploaded Image", width=250)
+    with col2:
+        st.image(overlay[:, :, ::-1], caption="Grad-CAM Heatmap", width=250)
