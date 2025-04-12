@@ -91,7 +91,7 @@ CLASS_ID_TO_NAME = {
 
 # ==== Load model ====
 model = TrafficSignCNN()
-model.load_state_dict(torch.load("outputs/traffic_sign_cnn.pth", map_location="cpu"))
+model.load_state_dict(torch.load("models/traffic_sign_cnn.pth", map_location="cpu"))
 model.eval()
 
 # ==== Streamlit UI ====
