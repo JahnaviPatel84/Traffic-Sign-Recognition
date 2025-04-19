@@ -1,49 +1,51 @@
-# 🚦 Traffic Sign Recognition with Explainable Deep Learning
+# Traffic Sign Recognition with Explainable Deep Learning
 
-A full-stack deep learning project that combines robust classification of German traffic signs using Convolutional Neural Networks (CNNs) with interpretability powered by Grad-CAM. The system is production-ready, featuring a Streamlit web app interface and modular training pipeline.
-
----
-
-## 📌 Project Objective
-
-> **Goal:** Build a scalable and interpretable computer vision system for real-time traffic sign recognition using CNNs trained on the GTSRB dataset, and empower end-users with **visual explanations** of model decisions through Grad-CAM.
+A full-stack deep learning project that combines robust classification of German traffic signs using a custom CNN model, with integrated explainability via Grad-CAM. Built for real-time inference with a modular architecture and a deployed Streamlit interface.
 
 ---
 
-## 🧠 Model Architecture
+## Project Overview
 
-- **Model:** Custom CNN with 3 convolutional layers + ReLU + MaxPool + Dropout + FC layers
-- **Input size:** 32×32 RGB images
-- **Output:** 43 softmax-activated class probabilities
-- **Training Acc:** ~99%  
-- **Validation Acc:** ~97%
-
-The model is trained from scratch and optimized using the Adam optimizer with categorical cross-entropy loss.
+This project delivers a scalable and interpretable computer vision pipeline for recognizing traffic signs in real time. It leverages the GTSRB dataset and prioritizes both model accuracy and transparency in decision-making.
 
 ---
 
-## 🔍 Explainability with Grad-CAM
+## Model Architecture
 
-This project integrates **Grad-CAM (Gradient-weighted Class Activation Mapping)** to highlight spatial regions in the input that influence the model’s decision. Grad-CAM helps diagnose:
-- Overfitting or spurious correlations
-- Model reliance on texture vs shape
-- Failure cases and class confusion
-
-Grad-CAM overlays are available both in-batch (`notebooks/2_gradcam_analysis.ipynb`) and live within the Streamlit UI.
-
-
----
-
-## 🔗 Dataset
-
-- **Source:** [GTSRB – German Traffic Sign Recognition Benchmark](https://www.kaggle.com/datasets/meowmeowmeowmeowmeow/gtsrb-german-traffic-sign)
-- **Classes:** 43 traffic sign categories
-- **Total Images:** 39,209 (Train) + 12,630 (Test)
-- **Preprocessing:** Resize to 32×32, Normalize to [-1, 1]
-
-⚠️ **Note:** The dataset is not included in this repository due to size.
-
+- Custom CNN architecture: 3 convolutional layers + ReLU + MaxPool + Dropout + Fully Connected layers  
+- Input: 32×32 RGB images  
+- Output: 43 softmax class probabilities  
+- Optimizer: Adam  
+- Loss: Categorical cross-entropy  
+- Performance: ~99% train accuracy, ~97% validation accuracy  
 
 ---
 
-**🔗 Try the live app here:** [Streamlit App](https://traffic-sign-recognition-27kcgm5fysldhkfbnq4g6x.streamlit.app/)
+## Interpretability with Grad-CAM
+
+To ensure model accountability, the system integrates Grad-CAM (Gradient-weighted Class Activation Mapping). This allows users to visualize which regions in the image contributed most to the model's prediction.
+
+Grad-CAM is implemented both:
+- Offline: via `notebooks/2_gradcam_analysis.ipynb`
+- Online: directly within the Streamlit interface
+
+---
+
+## Dataset
+
+- Source: [GTSRB – German Traffic Sign Recognition Benchmark (Kaggle)](https://www.kaggle.com/datasets/meowmeowmeowmeowmeow/gtsrb-german-traffic-sign)
+- 43 classes, ~51,000 total images
+- Preprocessing:
+  - Resized to 32×32 pixels
+  - Normalized to [-1, 1]
+
+*Note: Dataset not included due to size restrictions.*
+
+---
+
+## Deployment
+
+- Web UI built using Streamlit
+- Supports real-time image upload and classification with interpretability
+
+**Live Demo:** [https://traffic-sign-recognition-27kcgm5fysldhkfbnq4g6x.streamlit.app/](https://traffic-sign-recognition-27kcgm5fysldhkfbnq4g6x.streamlit.app/)
